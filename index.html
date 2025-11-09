@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assistente – Site simples | Assistente – Abortou a Cura (v18)</title>
+<title>Assistente – Abortou a Cura (v15)</title>
 <style>
 :root{
   --bg:#ffffff; --fg:#111; --muted:#6b6b6b;
@@ -24,7 +24,7 @@ h1,h2{margin:8px 0 10px 0}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:740px){.row{grid-template-columns:1fr}}
 .input,.select,.textarea{width:100%;padding:12px 12px;border-radius:10px;border:1px solid #dcdce3;background:#fff;color:var(--fg)}
-.dark .input,.dark .select,.dark . textarea{background:#0d0f14;border-color:#303646}
+.dark .input,.dark .select,.dark .textarea{background:#0d0f14;border-color:#303646}
 .input.error,.select.error,.textarea.error{border-color:var(--err);box-shadow:0 0 0 3px rgba(217,48,37,.15)}
 .textarea{min-height:120px;resize:none}
 .btn{cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:999px;border:0;background:var(--header);color:#fff;font-weight:700}
@@ -60,7 +60,7 @@ h1,h2{margin:8px 0 10px 0}
   <div class="brand">BRIDGESTONE</div>
   <div style="display:flex;gap:8px">
     <button id="btnTheme" class="btn secondary">Tema: Claro</button>
-    <button id="btnClear" class="btn secondary" title="Reseta tudo (WO, Técnico, defeito, checklist e resumo)">Limpar</button>
+    <button id="btnClear" class="btn secondary" title="Limpa os dados locais de WO e Técnico">Limpar memória</button>
   </div>
 </div>
 
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function(){
   const toast=$("#toast"); const showToast=(t)=>{toast.textContent=t;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1500);};
   const autosize=(el)=>{ el.style.height='auto'; el.style.height = el.scrollHeight+'px'; };
 
-  // Lembrar WO/Técnico + Tema
+  // Lembrar WO/Técnico
   const LS_WO='assist_wo', LS_TEC='assist_tec', LS_THEME='assist_theme';
   try{
     const w=localStorage.getItem(LS_WO), t=localStorage.getItem(LS_TEC);
@@ -150,15 +150,16 @@ document.addEventListener('DOMContentLoaded', function(){
     $("#inpTec").addEventListener('input',e=>{try{localStorage.setItem(LS_TEC,e.target.value.trim())}catch(_){}});
   }catch(_){}
 
-  // Tema claro/escuro
+  // Tema claro/escuro (persistente)
   function applyTheme(theme){
     document.documentElement.classList.toggle('dark', theme==='dark');
     const btn=$("#btnTheme");
     if(btn){ btn.textContent='Tema: ' + (theme==='dark'?'Escuro':'Claro'); }
   }
   (function(){
-    try{ applyTheme(localStorage.getItem(LS_THEME)||'light'); }
-    catch(_){ applyTheme('light'); }
+    try{
+      applyTheme(localStorage.getItem(LS_THEME)||'light');
+    }catch(_){ applyTheme('light'); }
   })();
   $("#btnTheme")?.addEventListener('click',()=>{
     try{
@@ -167,6 +168,15 @@ document.addEventListener('DOMContentLoaded', function(){
     }catch(_){
       const isDark=document.documentElement.classList.toggle('dark'); applyTheme(isDark?'dark':'light');
     }
+  });
+
+  // Limpar memória (WO/Técnico)
+  $("#btnClear")?.addEventListener('click',()=>{
+    try{
+      localStorage.removeItem(LS_WO); localStorage.removeItem(LS_TEC);
+      const w=$("#inpWO"), t=$("#inpTec"); if(w) w.value=''; if(t) t.value='';
+      showToast('Memória limpa.');
+    }catch(_){ showToast('Não foi possível limpar.'); }
   });
 
   let ITEMS=[];
@@ -253,27 +263,17 @@ document.addEventListener('DOMContentLoaded', function(){
       }
       return null;
     }).filter(Boolean);
-    const linhas=linhasArr.join("\n");
+    const linhas=linhasArr.join("\\n");
 
     const now=new Date();
     const header=now.toLocaleString();
     const wo=($("#inpWO").value||"").trim();
     const tec=($("#inpTec").value||"").trim();
     const cab=[header,(wo?`WO: ${wo}`:""),(tec?`Técnico: ${tec}`:"")].filter(Boolean).join(" | ");
-    const txt=cab+"\n\n"+(linhas?linhas:"(sem apontamentos)");
+    const txt=cab+"\\n\\n"+(linhas?linhas:"(sem apontamentos)");
     const out=$("#out"); out.value=txt; autosize(out);
     $("#cardOut").style.display="block";
     window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
-  }
-
-  function slugify(s){
-    const map = {'Á':'A','À':'A','Â':'A','Ã':'A','Ä':'A','á':'a','à':'a','â':'a','ã':'a','ä':'a',
-                 'É':'E','È':'E','Ê':'E','Ë':'E','é':'e','è':'e','ê':'e','ë':'e',
-                 'Í':'I','Ì':'I','Î':'I','Ï':'I','í':'i','ì':'i','î':'i','ï':'i',
-                 'Ó':'O','Ò':'O','Ô':'O','Õ':'O','Ö':'O','ó':'o','ò':'o','ô':'o','õ':'o','ö':'o',
-                 'Ú':'U','Ù':'U','Û':'U','Ü':'U','ú':'u','ù':'u','û':'u','ü':'u',
-                 'Ç':'C','ç':'c','Ñ':'N','ñ':'n'};
-    return s.split('').map(ch=>map[ch]||ch).join('').replace(/[^A-Za-z0-9\-]+/g,' ').trim().replace(/\s+/g,'_');
   }
 
   function montarPDF(){
@@ -292,29 +292,11 @@ document.addEventListener('DOMContentLoaded', function(){
     });
     const now=new Date();
     $("#phHeader").textContent=now.toLocaleString();
-    const woTxt=($("#inpWO").value||"-");
-    const tecTxt=($("#inpTec").value||"-");
-    $("#phWO").textContent="WO: "+woTxt;
-    $("#phTec").textContent="Técnico: "+tecTxt;
+    $("#phWO").textContent="WO: "+($("#inpWO").value||"-");
+    $("#phTec").textContent="Técnico: "+($("#inpTec").value||"-");
     if($("#out").value.trim().length===0){ buildResumo(); }
     $("#phResumo").textContent=$("#out").value.trim();
-
-    // Nome do arquivo (usa title, que o navegador propõe no "Salvar como PDF")
-    const defeito = ($("#selDef").value||'Defeito').replace(/\s+/g,'-');
-    const safeTec = slugify(tecTxt);
-    const d=new Date();
-    const dd=String(d.getDate()).padStart(2,'0');
-    const mm=String(d.getMonth()+1).padStart(2,'0');
-    const yyyy=d.getFullYear();
-    const hh=String(d.getHours()).padStart(2,'0');
-    const mi=String(d.getMinutes()).padStart(2,'0');
-    const dataStr=`${dd}-${mm}-${yyyy}_${hh}h${mi}`;
-    const fname = `WO-${slugify(woTxt)}_${safeTec}_${defeito}_${dataStr}.pdf`;
-
-    const prevTitle = document.title;
-    document.title = fname.replace(/\.pdf$/,'');
     window.print();
-    setTimeout(()=>{ document.title = prevTitle; showToast(`PDF salvo como: ${fname}`); }, 800);
   }
 
   $("#btnGo").addEventListener('click',()=>{
@@ -337,22 +319,6 @@ document.addEventListener('DOMContentLoaded', function(){
     }else fallback();
   });
   $("#btnReset")?.addEventListener('click',()=>location.reload());
-
-  // Botão "Limpar": reseta TUDO (menos o tema)
-  $("#btnClear")?.addEventListener('click',()=>{
-    try{
-      localStorage.removeItem(LS_WO); localStorage.removeItem(LS_TEC);
-    }catch(_){}
-    $("#inpWO").value=""; $("#inpTec").value="";
-    $("#selDef").value="";
-    $("#lista").innerHTML="";
-    $("#cardChk").style.display='none';
-    $("#done").textContent="0"; $("#total").textContent="0"; $("#bar").style.width="0%";
-    $("#out").value=""; autosize($("#out"));
-    $("#cardOut").style.display='none';
-    window.scrollTo({top:0,behavior:'smooth'});
-    showToast('Tudo limpo.');
-  });
 
   $("#inpWO").addEventListener('input', e=> e.target.classList.remove('error'));
   $("#inpTec").addEventListener('input', e=> e.target.classList.remove('error'));
