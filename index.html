@@ -1,73 +1,116 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assistente – Abortou a Cura (v15)</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assistente de Diagnóstico</title>
 <style>
 :root{
-  --bg:#ffffff; --fg:#111; --muted:#6b6b6b;
-  --accent:#e63c2f; --panel:#f7f7f8; --header:#2f2f2f; --err:#d93025;
-  --br:14px; --space:14px;
-  color-scheme: light dark;
+  --bg:#ffffff; --fg:#1e2024; --muted:#6f7782;
+  --panel:#f6f6f6; --line:#e6e6e6;
+  --header:#3b3f44; --accent:#cf2e2e; --primary:#3b3f44; --lightbtn:#efefef; --err:#d93025;
 }
-.dark{
-  --bg:#0f1115; --fg:#f2f4f8; --muted:#a7b0bf;
-  --panel:#171a21; --header:#0c0f14; --accent:#e63c2f; --err:#ff6b64;
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
-.appbar{position:sticky;top:0;z-index:5;background:var(--header);color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+*{box-sizing:border-box} html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);
+  font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;font-size:14px}
+.appbar{position:sticky;top:0;z-index:5;background:var(--header);color:#fff;
+  padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{font-weight:900;letter-spacing:.5px}
-.container{max-width:980px;margin:0 auto;padding:var(--space)}
-.card{background:var(--panel);border-radius:var(--br);padding:16px;border:1px solid #e8e8ef;box-shadow:0 2px 6px rgba(0,0,0,.05);margin-bottom:12px}
-h1,h2{margin:8px 0 10px 0}
+.rightbar{display:flex;align-items:center;gap:10px}
+.dev{color:#fff;opacity:.85;font-size:12px;white-space:nowrap}
+.container{max-width:980px;margin:0 auto;padding:16px}
+.card{background:var(--panel);border-radius:14px;padding:16px;border:1px solid var(--line);
+  box-shadow:0 2px 6px rgba(0,0,0,.04);margin-bottom:16px}
+h2{margin:6px 0 10px 0;font-size:22px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:740px){.row{grid-template-columns:1fr}}
-.input,.select,.textarea{width:100%;padding:12px 12px;border-radius:10px;border:1px solid #dcdce3;background:#fff;color:var(--fg)}
-.dark .input,.dark .select,.dark .textarea{background:#0d0f14;border-color:#303646}
-.input.error,.select.error,.textarea.error{border-color:var(--err);box-shadow:0 0 0 3px rgba(217,48,37,.15)}
+.input,.select,.textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);
+  background:#fff;color:var(--fg);font-size:15px}
 .textarea{min-height:120px;resize:none}
-.btn{cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:999px;border:0;background:var(--header);color:#fff;font-weight:700}
-.btn.secondary{background:#9aa0a6}
-.btn.accent{background:var(--accent)}
-.list{display:grid;gap:10px}
-.item{background:#fff;border:1px solid #e8e8ef;border-radius:12px;padding:12px}
-.dark .item{background:#111520;border-color:#2a2f3a}
-.item.error{border-color:var(--err);box-shadow:0 0 0 3px rgba(217,48,37,.12)}
-.item .title{font-weight:800}
-.item .how{margin-top:6px;color:#333}
-.dark .item .how{color:#d8dbe6}
-.item .obs{width:100%;min-height:52px;margin-top:8px;border-radius:10px;border:1px solid #ddd;padding:8px;background:#fafafa;resize:none;color:#111}
-.dark .item .obs{background:#0d0f14;color:#f2f4f8;border-color:#2a2f3a}
+.input.error,.select.error,.textarea.error{border-color:var(--err);box-shadow:0 0 0 3px rgba(217,48,37,.12)}
 .small{font-size:12px;color:var(--muted)}
+.list{display:grid;gap:12px}
+.item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}
+.item.error{border-color:var(--err);box-shadow:0 0 0 3px rgba(217,48,37,.12)}
+.item .title{font-weight:900;font-size:20px}
+.item .how{margin-top:6px;color:#333}
+.item .obs{width:100%;min-height:52px;margin-top:8px;border-radius:10px;border:1px solid #ddd;
+  padding:8px;background:#fafafa;resize:none;color:#111}
+.btn{cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 22px;border-radius:12px;border:1px solid transparent;font-weight:800;font-size:15px;
+  transition:.15s transform,.15s filter; white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.6;cursor:not-allowed}
+.btn.gray{background:var(--lightbtn);border-color:#d6d9df;color:#1f2328}
+.btn.dark{background:var(--primary);color:#fff;border:1px solid #2c2f34}
+.btn.red{background:var(--accent);color:#fff;border:1px solid #b81f1f}
+.btn.outline{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+/* VISIBILIDADE do botão na appbar */
+.appbar .btn.outline{border-color:#fff;color:#fff}
+.btn.icon .ic{width:16px;height:16px;display:inline-block}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .badge{padding:3px 8px;border-radius:999px;background:#eee;color:#333;font-size:12px}
-.dark .badge{background:#2a2f3a;color:#e2e6ef}
 .progress{height:10px;border-radius:999px;background:#eee;overflow:hidden;margin:8px 0 0}
-.dark .progress{background:#2a2f3a}
 .progress>span{display:block;height:100%;background:var(--accent);width:0%}
-.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;transition:.2s}
-.dark .toast{background:#222835}
-.toast.show{opacity:1}
+.photo-row{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:start;margin-bottom:10px}
+.photo-row img{width:120px;height:90px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#fff}
+.photo-row .caption{width:100%;min-height:40px}
+
+/* Diagramas */
+.diagram-grid{display:grid;grid-template-columns:repeat(2, minmax(320px, 1fr));gap:48px 44px;justify-items:center;margin:12px 4px 12px}
+@media (max-width:640px){.diagram-grid{grid-template-columns:1fr}}
+.diag-block{display:flex;flex-direction:column;align-items:center;gap:0}
+.diag-title{font-weight:900;font-size:16px;color:var(--fg);letter-spacing:.2px;margin:8px 0 2px}
+.circle{position:relative;width:340px;height:340px;border-radius:50%;background:#fff;border:2px solid #dbe3ef;
+  box-shadow:inset 0 0 0 6px #f5f7fb;margin:10px 0 6px}
+.circle .axis{position:absolute;left:50%;top:0;bottom:0;width:2px;background:#dbe3ef;transform:translateX(-50%);z-index:0}
+.circle .axis.h{top:50%;left:0;right:0;height:2px;width:auto;transform:translateY(-50%)}
+.qwrap{position:absolute;display:flex;align-items:center;gap:6px;z-index:1}
+.qwrap input.q{width:118px;max-width:46vw;padding:10px 34px 10px 10px;border-radius:12px;border:1px solid #cfd4da;
+  text-align:center;background:#fafafa;font-weight:800}
+.qwrap .unit{position:absolute;right:8px;pointer-events:none;color:#666;font-size:13px}
+.qwrap.top{top:70px;left:50%;transform:translateX(-50%)}
+.qwrap.right{top:50%;right:38px;transform:translateY(-50%)}
+.qwrap.bottom{bottom:70px;left:50%;transform:translateX(-50%)}
+.qwrap.left{top:50%;left:38px;transform:translateY(-50%)}
+
+/* Impressão */
 @media print{
   .no-print{display:none !important}
   #printArea{display:block !important}
+  body{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  .avoid-break{break-inside:avoid; page-break-inside:avoid}
+  table, thead, tbody, tr, td, th { page-break-inside: avoid !important; break-inside: avoid !important; }
 }
 #printArea{display:none}
+.print-diagram .qval{position:absolute;transform:translate(-50%,-50%);padding:3px 6px;border:1px solid #bbb;border-radius:8px;background:#f7f7f7;font-size:13px}
+.print-diagram .qval.top{left:50%;top:20%}
+.print-diagram .qval.right{left:80%;top:50%}
+.print-diagram .qval.bottom{left:50%;top:80%}
+.print-diagram .qval.left{left:20%;top:50%}
+.print-photos{display:grid;grid-template-columns:repeat(2,minmax(260px,1fr));gap:16px;margin-top:8px}
+.print-photos img{width:100%;height:230px;object-fit:cover;border:1px solid #bbb;border-radius:8px}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#111;color:#fff;
+  padding:10px 14px;border-radius:10px;opacity:0;transition:.2s;pointer-events:none}
+.toast.show{opacity:1}
+
+/* Câmera modal */
+#camModal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:50}
+#camBox{background:#fff;padding:16px;border-radius:12px;max-width:720px;width:95%;}
+#camBox video,#camBox canvas{width:100%;max-height:60vh;background:#000;border-radius:10px}
 </style>
 </head>
 <body>
 <div class="appbar no-print">
   <div class="brand">BRIDGESTONE</div>
-  <div style="display:flex;gap:8px">
-    <button id="btnTheme" class="btn secondary">Tema: Claro</button>
-    <button id="btnClear" class="btn secondary" title="Limpa os dados locais de WO e Técnico">Limpar memória</button>
+  <div class="rightbar">
+    <button id="btnClear" class="btn outline" title="Reseta tudo">Limpar</button>
+    <div class="dev">Desenvolvido por Daniel</div>
   </div>
 </div>
 
 <div class="container no-print">
-
   <div class="card" id="cardInit">
-    <h2>1) Dados iniciais</h2>
+    <h2>Assistente de Diagnóstico</h2>
     <div class="row">
       <div>
         <label class="small">Nº da WO (ordem de serviço) <span style="color:var(--err)">*</span></label>
@@ -79,123 +122,196 @@ h1,h2{margin:8px 0 10px 0}
       </div>
     </div>
 
-    <h2 style="margin-top:14px">2) Escolha o defeito</h2>
+    <h2 style="margin-top:14px">Escolha o defeito</h2>
     <select id="selDef" class="select">
       <option value="" selected>— selecione —</option>
-      <option>Abortou a Cura</option>
     </select>
-    <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:8px">
-      <button id="btnGo" class="btn">Avançar</button>
+    <div class="actions" style="justify-content:flex-end;margin-top:10px">
+      <button id="btnGo" class="btn dark">Avançar</button>
     </div>
   </div>
 
   <div class="card" id="cardChk" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-      <div><strong>Checklist – Abortou a Cura</strong><br><span class="small">Marque OK / NOK / N.A. e registre observações (NOK exige observação)</span></div>
+      <div><strong id="chkTitle" style="font-size:22px">Checklist</strong><br>
+        <span class="small">Marque OK / NOK / N.A. e registre observações (NOK exige observação)</span></div>
       <div class="badge"><span id="done">0</span>/<span id="total">0</span></div>
     </div>
     <div class="progress"><span id="bar"></span></div>
-    <div id="lista" class="list" style="margin-top:10px"></div>
-    <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:8px;flex-wrap:wrap">
-      <button id="btnResumo" class="btn accent">Gerar resumo para o BAMM</button>
-      <button id="btnPDF" class="btn secondary">Salvar PDF</button>
+    <div id="lista" class="list" style="margin-top:12px"></div>
+
+    <!-- Ações finais -->
+    <div class="actions" style="justify-content:flex-end;margin-top:10px">
+      <label class="btn gray icon">
+        <svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M5 7h3l1-2h6l1 2h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zm7 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>
+        </svg>
+        Anexar imagem
+        <input id="filePhoto" type="file" accept="image/*" hidden>
+      </label>
+      <button id="btnCam" class="btn gray icon" title="Abrir câmera">
+        <svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M4 7h3l1.2-2.4A1 1 0 0 1 9 4h6a1 1 0 0 1 .9.6L17 7h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zm8 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>
+        </svg>
+        Tirar foto
+      </button>
+      <button id="btnResumo" class="btn red">Gerar resumo para o BAMM</button>
+      <button id="btnPDF" class="btn dark">Salvar PDF</button>
     </div>
+
+    <div id="photoList" style="margin-top:12px"></div>
   </div>
 
   <div class="card" id="cardOut" style="display:none">
     <h2>Resumo</h2>
     <textarea id="out" class="textarea" placeholder="Resumo gerado aqui…"></textarea>
-    <div style="display:flex;justify-content:flex-end;margin-top:8px;gap:8px;flex-wrap:wrap">
-      <button id="btnCopy" class="btn">Copiar</button>
-      <button id="btnReset" class="btn secondary">Novo</button>
+    <div class="actions" style="justify-content:flex-end;margin-top:8px">
+      <button id="btnCopy" class="btn gray">Copiar</button>
+      <button id="btnReset" class="btn dark">Novo</button>
     </div>
   </div>
-
 </div>
 
+<!-- Modal da câmera -->
+<div id="camModal" class="no-print" aria-hidden="true">
+  <div id="camBox">
+    <div style="display:grid;gap:8px">
+      <video id="video" playsinline></video>
+      <canvas id="canvas" style="display:none"></canvas>
+      <div class="actions" style="justify-content:flex-end">
+        <button id="btnShot" class="btn red">Capturar</button>
+        <button id="btnUse" class="btn dark" style="display:none">Usar foto</button>
+        <button id="btnClose" class="btn gray">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Área de impressão (PDF) -->
+<div id="printWrap" class="avoid-break">
 <div id="printArea">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
     <div style="font-weight:800">Assistente de Diagnóstico</div>
     <div style="font-weight:900;letter-spacing:1px">BRIDGESTONE</div>
   </div>
   <div style="font-weight:700" id="phHeader"></div>
-  <div id="phDefeito" style="margin:6px 0 4px">Defeito: Abortou a Cura</div>
+  <div id="phDefeito" style="margin:6px 0 4px">Defeito:</div>
   <div id="phWO" class="small" style="margin:0 0 2px"></div>
   <div id="phTec" class="small" style="margin:0 0 10px"></div>
-  <table style="width:100%;border-collapse:collapse;margin-bottom:10px" border="1" cellpadding="6">
-    <thead><tr><th style="width:40%">Passo</th><th style="width:10%">Status</th><th>Observação</th></tr></thead>
-    <tbody id="phTable"></tbody>
-  </table>
-  <div style="font-weight:700;margin-bottom:4px">Resumo para BAMM</div>
+  <div id="phDiagramas"></div>
+  <div class="avoid-break">
+    <table style="width:100%;border-collapse:collapse;margin:10px 0" border="1" cellpadding="6">
+      <thead><tr><th style="width:40%">Passo</th><th style="width:10%">Status</th><th>Observação</th></tr></thead>
+      <tbody id="phTable"></tbody>
+    </table>
+  </div>
+  <div id="phFotosWrap" style="display:none;margin-top:12px">
+    <div style="font-weight:700;margin-bottom:6px">Fotos do diagnóstico</div>
+    <div class="print-photos" id="phFotos"></div>
+  </div>
+  <div style="font-weight:700;margin:10px 0 4px">Resumo para BAMM</div>
   <pre id="phResumo" style="white-space:pre-wrap;margin:0"></pre>
+</div>
 </div>
 
 <div id="toast" class="toast no-print" role="status" aria-live="polite">OK</div>
 
 <script>
-var DATA = {"defeitos": ["Abortou a Cura"], "itens_por_defeito": {"Abortou a Cura": [{"PassoOrdem": 1, "OQueVerificar": "Teste de vazamento", "ComoVerificar": "Instalar tampão e executar teste; confirmar se o aborto ocorreu logo após a etapa de vazamento."}, {"PassoOrdem": 2, "OQueVerificar": "Válvula de descarga do shaping", "ComoVerificar": "Checar passagem/obstrução; remover resíduos e garantir acionamento correto."}, {"PassoOrdem": 3, "OQueVerificar": "Condições do bladder", "ComoVerificar": "Verificar se está solto, furado, mal posicionado ou com vedação comprometida."}, {"PassoOrdem": 4, "OQueVerificar": "Anéis e O’rings", "ComoVerificar": "Inspecionar desgaste/cortes e montagem; reinstalar conforme procedimento."}, {"PassoOrdem": 5, "OQueVerificar": "Pressão do ar do timer (≈55 psi)", "ComoVerificar": "Medir no bloco do timer; se baixo, procurar vazamentos na linha."}, {"PassoOrdem": 6, "OQueVerificar": "Solenoides e válvulas 5/2 do timer", "ComoVerificar": "Verificar travamento de carretel/passa-ar; testar acionamentos."}, {"PassoOrdem": 7, "OQueVerificar": "Cartão de saída do timer (CLP)", "ComoVerificar": "Monitorar saídas durante a cura; testar com tampão para falha intermitente."}, {"PassoOrdem": 8, "OQueVerificar": "Mangueiras/tubos do sistema interno", "ComoVerificar": "Inspecionar layout, rachaduras, folgas ou vazamentos; substituir se necessário."}, {"PassoOrdem": 9, "OQueVerificar": "Obstrução em transmissores de pressão", "ComoVerificar": "Conferir leitura; desobstruir linha de sinal e checar conectores."}, {"PassoOrdem": 10, "OQueVerificar": "Sistema de segurança/acionamento", "ComoVerificar": "Confirmar retornos OK de atuadores e sensores; limites de prensa."}, {"PassoOrdem": 11, "OQueVerificar": "Limite pneumático", "ComoVerificar": "Verificar liberação de ar quando acionado; checar atuador e vazamentos."}, {"PassoOrdem": 12, "OQueVerificar": "Relés de acionamento das válvulas", "ComoVerificar": "Testar relés do timer/blocos; substituir se sem pulso ou travados."}]}};
+/* ================== DADOS (edite aqui se precisar ajustar textos) ================== */
+var DATA = {
+  "defeitos": ["Abortou a Cura", "Falta de Cura"],
+  "itens_por_defeito": {
+    "Abortou a Cura": [
+      {"PassoOrdem":1,"OQueVerificar":"Teste de vazamento","ComoVerificar":"Instalar tampão e executar teste; confirmar se o aborto ocorreu logo após a etapa de vazamento."},
+      {"PassoOrdem":2,"OQueVerificar":"Válvula de descarga do shaping","ComoVerificar":"Checar passagem/obstrução; remover resíduos e garantir acionamento correto."},
+      {"PassoOrdem":3,"OQueVerificar":"Condições do bladder","ComoVerificar":"Verificar se está solto, furado, mal posicionado ou com vedação comprometida."},
+      {"PassoOrdem":4,"OQueVerificar":"Anéis e O’rings","ComoVerificar":"Inspecionar desgaste/cortes e montagem; reinstalar conforme procedimento."},
+      {"PassoOrdem":5,"OQueVerificar":"Pressão do ar do timer (≈55 psi)","ComoVerificar":"Medir no bloco do timer; se baixo, procurar vazamentos na linha."},
+      {"PassoOrdem":6,"OQueVerificar":"Solenoides e válvulas 5/2 do timer","ComoVerificar":"Verificar travamento de carretel/passa-ar; testar acionamentos."},
+      {"PassoOrdem":7,"OQueVerificar":"Cartão de saída do timer (CLP)","ComoVerificar":"Monitorar saídas durante a cura; testar com tampão para falha intermitente."},
+      {"PassoOrdem":8,"OQueVerificar":"Mangueiras/tubos do sistema interno","ComoVerificar":"Inspecionar layout, rachaduras, folgas ou vazamentos; substituir se necessário."},
+      {"PassoOrdem":9,"OQueVerificar":"Obstrução em transmissores de pressão","ComoVerificar":"Conferir leitura; desobstruir linha de sinal e checar conectores."},
+      {"PassoOrdem":10,"OQueVerificar":"Sistema de segurança/acionamento","ComoVerificar":"Confirmar retornos OK de atuadores e sensores; limites de prensa."},
+      {"PassoOrdem":11,"OQueVerificar":"Limite pneumático","ComoVerificar":"Verificar liberação de ar quando acionado; checar atuador e vazamentos."},
+      {"PassoOrdem":12,"OQueVerificar":"Relés de acionamento das válvulas","ComoVerificar":"Testar relés do timer/blocos; substituir se sem pulso ou travados."}
+    ],
+    "Falta de Cura": [
+      {"PassoOrdem":1,"Tipo":"DIAGRAMA","Alvo":"Molde Esquerdo","Unidade":"°F"},
+      {"PassoOrdem":1,"Tipo":"DIAGRAMA","Alvo":"Molde Direito","Unidade":"°F"},
+      {"PassoOrdem":1,"Tipo":"DIAGRAMA","Alvo":"Platen Esquerdo","Unidade":"°F"},
+      {"PassoOrdem":1,"Tipo":"DIAGRAMA","Alvo":"Platen Direito","Unidade":"°F"},
+      {"PassoOrdem":2,"OQueVerificar":"Válvulas manuais da prensa","ComoVerificar":"Conferir posição e abertura total; checar travamentos nas alavancas/manoplas."},
+      {"PassoOrdem":3,"OQueVerificar":"Válvulas manuais do Trench","ComoVerificar":"Confirmar abertura total e sentido correto de fluxo; sem obstruções."},
+      {"PassoOrdem":4,"OQueVerificar":"Mangueiras de entrada e retorno (sistema interno)","ComoVerificar":"Inspecionar do manifold ao molde; dobras, esmagamentos e vazamentos."},
+      {"PassoOrdem":5,"OQueVerificar":"Mangueiras da chapa e do molde","ComoVerificar":"Checar conexão, vedação e integridade; substituir se ressecadas/danificadas."},
+      {"PassoOrdem":6,"OQueVerificar":"Bladders (condição geral)","ComoVerificar":"Verificar posicionamento, furos/microfuros e aperto/vedação dos anéis."},
+      {"PassoOrdem":7,"OQueVerificar":"Pistão e passagem de água","ComoVerificar":"Confirmar passagem livre; testar funcionamento e verificar bypass indevido."},
+      {"PassoOrdem":8,"OQueVerificar":"Inspeção de vazamentos gerais","ComoVerificar":"Vazamentos em mangueiras, conexões, cilindros, purgadores e drenos."},
+      {"PassoOrdem":9,"OQueVerificar":"Drenos e purgadores","ComoVerificar":"Abrir/fechar e testar atuação; remover sujeira e condensado."},
+      {"PassoOrdem":10,"OQueVerificar":"Sensores de temperatura/pressão e malha de aquecimento","ComoVerificar":"Posicionamento, continuidade e alimentação; validar leituras na IHM/CLP."},
+      {"PassoOrdem":11,"OQueVerificar":"Análise dos gráficos de temperatura e pressão (IHM/CCM)","ComoVerificar":"Comparar curvas com parâmetros da carta; inconsistências indicam falha térmica."},
+      {"PassoOrdem":12,"OQueVerificar":"Tempo de cura","ComoVerificar":"Comparar tempo programado/executado com a carta do produto."},
+      {"PassoOrdem":13,"OQueVerificar":"Aquecimento inicial antes do ciclo","ComoVerificar":"Assegurar aquecimento da prensa/moldes antes do ciclo de cura."}
+    ]
+  }
+};
+/* ================================================================================ */
 
 document.addEventListener('DOMContentLoaded', function(){
   const $=s=>document.querySelector(s); const $$=s=>Array.from(document.querySelectorAll(s));
-  const toast=$("#toast"); const showToast=(t)=>{toast.textContent=t;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1500);};
-  const autosize=(el)=>{ el.style.height='auto'; el.style.height = el.scrollHeight+'px'; };
+  const toast=$("#toast"); const showToast=(t)=>{toast.textContent=t;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),3000);};
 
-  // Lembrar WO/Técnico
-  const LS_WO='assist_wo', LS_TEC='assist_tec', LS_THEME='assist_theme';
-  try{
-    const w=localStorage.getItem(LS_WO), t=localStorage.getItem(LS_TEC);
-    if(w && !$("#inpWO").value) $("#inpWO").value=w;
-    if(t && !$("#inpTec").value) $("#inpTec").value=t;
-    $("#inpWO").addEventListener('input',e=>{try{localStorage.setItem(LS_WO,e.target.value.trim())}catch(_){}});
-    $("#inpTec").addEventListener('input',e=>{try{localStorage.setItem(LS_TEC,e.target.value.trim())}catch(_){}});
-  }catch(_){}
+  // Carregar defeitos
+  const sel = $("#selDef");
+  sel.innerHTML = '<option value="">— selecione —</option>' + DATA.defeitos.map(d=>`<option>${d}</option>`).join("");
 
-  // Tema claro/escuro (persistente)
-  function applyTheme(theme){
-    document.documentElement.classList.toggle('dark', theme==='dark');
-    const btn=$("#btnTheme");
-    if(btn){ btn.textContent='Tema: ' + (theme==='dark'?'Escuro':'Claro'); }
-  }
-  (function(){
-    try{
-      applyTheme(localStorage.getItem(LS_THEME)||'light');
-    }catch(_){ applyTheme('light'); }
-  })();
-  $("#btnTheme")?.addEventListener('click',()=>{
-    try{
-      const cur=localStorage.getItem(LS_THEME)||'light';
-      const nxt=(cur==='light'?'dark':'light'); localStorage.setItem(LS_THEME,nxt); applyTheme(nxt);
-    }catch(_){
-      const isDark=document.documentElement.classList.toggle('dark'); applyTheme(isDark?'dark':'light');
-    }
-  });
-
-  // Limpar memória (WO/Técnico)
-  $("#btnClear")?.addEventListener('click',()=>{
-    try{
-      localStorage.removeItem(LS_WO); localStorage.removeItem(LS_TEC);
-      const w=$("#inpWO"), t=$("#inpTec"); if(w) w.value=''; if(t) t.value='';
-      showToast('Memória limpa.');
-    }catch(_){ showToast('Não foi possível limpar.'); }
-  });
-
-  let ITEMS=[];
+  let ITEMS=[], DEF_ATUAL=""; let PHOTOS=[]; let stream=null;
 
   function updateProgress(){
-    const total=ITEMS.length;
+    const total=ITEMS.filter(it=>it.Tipo!=="DIAGRAMA").length;
     const checked=$$("#lista input[type=radio]:checked").length;
-    $("#done").textContent=checked;
-    $("#bar").style.width=(total?Math.round(100*checked/total):0)+'%';
+    $("#done").textContent=checked; $("#bar").style.width=(total?Math.round(100*checked/total):0)+'%';
+  }
+
+  /* DIAGRAMAS */
+  function buildCircle(idPrefix){
+    const circle = document.createElement('div');
+    circle.className='circle';
+    circle.innerHTML = `
+      <div class="axis"></div><div class="axis h"></div>
+      <div class="qwrap top"><input id="${idPrefix}_top" class="q" inputmode="decimal"><span class="unit">°F</span></div>
+      <div class="qwrap right"><input id="${idPrefix}_right" class="q" inputmode="decimal"><span class="unit">°F</span></div>
+      <div class="qwrap bottom"><input id="${idPrefix}_bottom" class="q" inputmode="decimal"><span class="unit">°F</span></div>
+      <div class="qwrap left"><input id="${idPrefix}_left" class="q" inputmode="decimal"><span class="unit">°F</span></div>`;
+    return circle;
+  }
+  function renderDiagGroup(){
+    const wrap = document.createElement('div'); wrap.className='item';
+    wrap.innerHTML = `<div class="title">1. Medição de temperatura do molde e platen com termo visor</div>
+                      <div class="how"><strong>Como verificar:</strong> Medir 4 pontos com termo visor; comparar com carta (Exemplo: ~290°F); registrar no diagrama.</div>`;
+    const grid = document.createElement('div'); grid.className='diagram-grid';
+    const block = (titulo, idPrefix)=>{
+      const holder = document.createElement('div'); holder.className='diag-block';
+      const h = document.createElement('div'); h.textContent = titulo; h.className='diag-title'; holder.append(h);
+      holder.append(buildCircle(idPrefix)); return holder;
+    };
+    grid.append(block('Molde Esquerdo', 'diag1'));
+    grid.append(block('Molde Direito', 'diag2'));
+    grid.append(block('Platen Esquerdo', 'diag3'));
+    grid.append(block('Platen Direito', 'diag4'));
+    wrap.append(grid);
+    const note = document.createElement('div'); note.className='small'; note.textContent='Obs.: estes campos não entram na contagem de progresso e não exigem OK/NOK.'; wrap.append(note);
+    return wrap;
   }
 
   function renderChecklist(){
-    $("#total").textContent=ITEMS.length;
-    $("#done").textContent=0; $("#bar").style.width='0%';
-    const wrap=$("#lista"); wrap.innerHTML="";
+    $("#chkTitle").textContent = "Checklist – " + DEF_ATUAL;
+    const lista=$("#lista"); lista.innerHTML="";
+    if(DEF_ATUAL==="Falta de Cura"){ lista.append(renderDiagGroup()); }
     ITEMS.forEach((it,idx)=>{
+      if(it.Tipo==="DIAGRAMA") return;
       const el=document.createElement('div'); el.className='item';
-      el.innerHTML=`
-        <div class="title">${it.PassoOrdem||idx+1}. ${it.OQueVerificar}</div>
+      el.innerHTML=`<div class="title">${it.PassoOrdem}. ${it.OQueVerificar}</div>
         ${it.ComoVerificar?`<div class="how"><strong>Como verificar:</strong> ${it.ComoVerificar}</div>`:""}
         <div class="small" style="margin-top:6px">
           <label><input type="radio" name="r${idx}" value="OK"> OK</label>
@@ -203,126 +319,262 @@ document.addEventListener('DOMContentLoaded', function(){
           <label style="margin-left:10px"><input type="radio" name="r${idx}" value="NA"> N.A.</label>
         </div>
         <textarea class="obs" placeholder="Observação (obrigatória se marcar NOK)"></textarea>`;
-      wrap.append(el);
+      lista.append(el);
     });
-    $$("#lista .obs").forEach(t=>{ autosize(t); t.addEventListener('input',()=>{ autosize(t); t.classList.remove('error'); t.closest('.item').classList.remove('error'); }); });
+    const total=ITEMS.filter(it=>it.Tipo!=="DIAGRAMA").length;
+    $("#total").textContent=total; $("#done").textContent=0; $("#bar").style.width='0%';
     $("#lista").addEventListener('change',(e)=>{
       if(e.target && e.target.matches('input[type=radio]')){
-        const idx=e.target.name.replace('r','');
-        const area=$$("#lista .obs")[idx];
-        if(e.target.value!=='NOK'){ area.classList.remove('error'); area.closest('.item').classList.remove('error'); }
+        const cont = e.target.closest('.item');
+        const area = cont?.querySelector('.obs');
+        if(area && e.target.value!=='NOK'){ area.classList.remove('error'); cont.classList.remove('error'); }
         updateProgress();
       }
-    },{once:false});
+    },{once:true});
+    Array.from(document.querySelectorAll('.obs')).forEach(t=> t.addEventListener('input',()=>{
+      t.classList.remove('error'); t.closest('.item').classList.remove('error'); t.style.height='auto'; t.style.height=t.scrollHeight+'px';
+    }));
   }
 
   function validarCamposIniciais(){
-    const wo=$("#inpWO"), tec=$("#inpTec"), sel=$("#selDef");
-    [wo,tec,sel].forEach(el=>el.classList.remove('error'));
-    let ok=true;
-    if(!wo.value.trim()){ wo.classList.add('error'); if(ok) wo.focus(); ok=false; }
+    const wo=$("#inpWO"), tec=$("#inpTec"), sel=$("#selDef"); [wo,tec,sel].forEach(el=>el.classList.remove('error'));
+    let ok=true; if(!wo.value.trim()){ wo.classList.add('error'); if(ok) wo.focus(); ok=false; }
     if(!tec.value.trim()){ tec.classList.add('error'); if(ok) tec.focus(); ok=false; }
     if(!sel.value.trim()){ sel.classList.add('error'); if(ok) sel.focus(); ok=false; }
-    if(!ok){ showToast('Preencha WO, Técnico e selecione o defeito.'); }
-    return ok;
+    if(!ok){ showToast('Preencha WO, Técnico e selecione o defeito.'); } return ok;
   }
 
   function validarNOK(){
-    const radios=$$("#lista input[type=radio]");
-    const obs=$$("#lista .obs");
-    let erros=[];
-    ITEMS.forEach((it,i)=>{
-      const group=radios.filter(r=>r.name===`r${i}`);
-      const sel=group.find(r=>r.checked);
-      const v=sel?sel.value:"";
-      const o=(obs[i].value||"").trim();
-      if(v==="NOK" && o.length===0){
-        erros.push(i); obs[i].classList.add('error'); obs[i].closest('.item').classList.add('error');
-      }
+    const cards = $$("#lista .item"); let erros=[];
+    cards.forEach((card)=>{
+      const sel = card.querySelector('input[type=radio]:checked');
+      const obs = card.querySelector('.obs');
+      const v = sel ? sel.value : ""; const o = (obs?.value||"").trim();
+      if(v==="NOK" && o.length===0){ erros.push(card); obs?.classList.add('error'); card.classList.add('error'); }
     });
-    if(erros.length){
-      const area=$$("#lista .obs")[erros[0]]; area.focus(); area.scrollIntoView({behavior:'smooth',block:'center'});
-      showToast('Preencha a Observação onde marcou NOK.'); return false;
-    }
+    if(erros.length){ const card=erros[0]; card.scrollIntoView({behavior:'smooth',block:'center'}); const area=card.querySelector('.obs'); area?.focus(); showToast('Preencha a Observação onde marcou NOK.'); return false; }
     return true;
+  }
+
+  function getDiagramValues(){
+    if(DEF_ATUAL!=="Falta de Cura") return null;
+    const take=(id)=> (document.getElementById(id)?.value||"").trim();
+    return {
+      "Molde Esquerdo": {Superior: take("diag1_top"), Direita: take("diag1_right"), Inferior: take("diag1_bottom"), Esquerda: take("diag1_left")},
+      "Molde Direito": {Superior: take("diag2_top"), Direita: take("diag2_right"), Inferior: take("diag2_bottom"), Esquerda: take("diag2_left")},
+      "Platen Esquerdo": {Superior: take("diag3_top"), Direita: take("diag3_right"), Inferior: take("diag3_bottom"), Esquerda: take("diag3_left")},
+      "Platen Direito": {Superior: take("diag4_top"), Direita: take("diag4_right"), Inferior: take("diag4_bottom"), Esquerda: take("diag4_left")}
+    };
   }
 
   function buildResumo(){
     if(!validarCamposIniciais()) return;
     if(!validarNOK()) return;
-    const radios=$$("#lista input[type=radio]");
-    const obs=$$("#lista .obs");
-    const linhasArr=ITEMS.map((it,i)=>{
-      const group=radios.filter(r=>r.name===`r${i}`);
-      const sel=group.find(r=>r.checked);
-      const v=sel?sel.value:"";
-      const o=(obs[i].value||"").trim();
-      if(v==="NOK" || o.length>0){
-        const obsTxt=o?` | Obs.: ${o}`:"";
-        return `- ${it.OQueVerificar}${obsTxt}`;
-      }
-      return null;
-    }).filter(Boolean);
-    const linhas=linhasArr.join("\\n");
 
+    const cards = $$("#lista .item");
     const now=new Date();
-    const header=now.toLocaleString();
+    const dd=String(now.getDate()).padStart(2,'0');
+    const mm=String(now.getMonth()+1).padStart(2,'0');
+    const yyyy=now.getFullYear();
+    const hh=String(now.getHours()).padStart(2,'0');
+    const mi=String(now.getMinutes()).padStart(2,'0');
+    const header=`${dd}/${mm}/${yyyy} ${hh}:${mi}`;
     const wo=($("#inpWO").value||"").trim();
     const tec=($("#inpTec").value||"").trim();
-    const cab=[header,(wo?`WO: ${wo}`:""),(tec?`Técnico: ${tec}`:"")].filter(Boolean).join(" | ");
-    const txt=cab+"\\n\\n"+(linhas?linhas:"(sem apontamentos)");
-    const out=$("#out"); out.value=txt; autosize(out);
-    $("#cardOut").style.display="block";
-    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+    let parts=[header,(wo?`WO: ${wo}`:""),(tec?`Técnico: ${tec}`:"")].filter(Boolean);
+    let txt = parts.join(" | ") + "\n\n";
+
+    if(DEF_ATUAL==="Falta de Cura"){
+      const d = getDiagramValues();
+      const addBlock=(titulo, obj)=>{
+        txt += `${titulo}:\n`;
+        txt += ` - Superior: ${obj.Superior}°F\n`;
+        txt += ` - Direita: ${obj.Direita}°F\n`;
+        txt += ` - Inferior: ${obj.Inferior}°F\n`;
+        txt += ` - Esquerda: ${obj.Esquerda}°F\n\n`;
+      };
+      addBlock("Molde Esquerdo", d["Molde Esquerdo"]);
+      addBlock("Molde Direito", d["Molde Direito"]);
+      addBlock("Platen Esquerdo", d["Platen Esquerdo"]);
+      addBlock("Platen Direito", d["Platen Direito"]);
+    }
+
+    const linhasAp=[];
+    cards.forEach(card=>{
+      const title = card.querySelector('.title')?.textContent||"";
+      const sel = card.querySelector('input[type=radio]:checked');
+      const v = sel? sel.value : "";
+      const o = (card.querySelector('.obs')?.value||"").trim();
+      if(v==="NOK" || o.length>0){
+        const label = title.replace(/^\d+\.\s*/,''); const obsTxt = o ? ` | Obs.: ${o}` : "";
+        linhasAp.push(`- ${label}${obsTxt}`);
+      }
+    });
+    if(linhasAp.length){ txt += "Outros apontamentos:\n" + linhasAp.join("\n"); }
+
+    const out=$("#out"); out.value=txt; out.style.height='auto'; out.style.height=out.scrollHeight+'px';
+    $("#cardOut").style.display="block"; window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
   }
 
+  function slugify(s){
+    const map = {'Á':'A','À':'A','Â':'A','Ã':'A','Ä':'A','á':'a','à':'a','â':'a','ã':'a','ä':'a','É':'E','È':'E','Ê':'E','Ë':'E','é':'e','è':'e','ê':'e','ë':'e','Í':'I','Ì':'I','Î':'I','Ï':'I','í':'i','ì':'i','î':'i','ï':'i','Ó':'O','Ò':'O','Ô':'O','Õ':'O','Ö':'O','ó':'o','ò':'o','ô':'o','õ':'o','ö':'o','Ú':'U','Ù':'U','Û':'U','Ü':'U','ú':'u','ù':'u','û':'u','ü':'u','Ç':'C','ç':'c','Ñ':'N','ñ':'n'};
+    return s.split('').map(ch=>map[ch]||ch).join('').replace(/[^A-Za-z0-9\-]+/g,' ').trim().replace(/\s+/g,'_');
+  }
+
+  /* FOTOS */
+  function addPhotoDataURL(dataURL){
+    PHOTOS.push({dataURL, caption:""}); renderPhotoList();
+  }
+  function addPhoto(file){
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => addPhotoDataURL(e.target.result);
+    reader.readAsDataURL(file);
+  }
+  function renderPhotoList(){
+    const box = document.getElementById('photoList'); box.innerHTML="";
+    PHOTOS.forEach((ph, i)=>{
+      const row = document.createElement('div'); row.className='photo-row';
+      const img = document.createElement('img'); img.src=ph.dataURL; row.append(img);
+      const right = document.createElement('div');
+      right.innerHTML = `<textarea class="input caption" placeholder="Descreva o que esta foto mostra...">${ph.caption||""}</textarea>
+                         <div class="actions" style="margin-top:6px">
+                           <button class="btn gray" data-del="${i}">Remover</button>
+                         </div>`;
+      row.append(right); box.append(row);
+      right.querySelector('.caption').addEventListener('input', (e)=>{ PHOTOS[i].caption = e.target.value; });
+      right.querySelector('[data-del]').addEventListener('click', ()=>{ PHOTOS.splice(i,1); renderPhotoList(); });
+    });
+  }
+  document.getElementById('filePhoto').addEventListener('change', (e)=> addPhoto(e.target.files?.[0]));
+
+  // Câmera
+  const camModal = document.getElementById('camModal');
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const btnCam = document.getElementById('btnCam');
+  const btnShot = document.getElementById('btnShot');
+  const btnUse = document.getElementById('btnUse');
+  const btnClose = document.getElementById('btnClose');
+
+  async function openCamera(){
+    try{
+      const constraints = { video: { facingMode: { ideal: "environment" } }, audio:false };
+      if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+        showToast("Sem acesso à câmera; use Anexar imagem.");
+        return;
+      }
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
+      video.srcObject = stream; await video.play();
+      canvas.style.display="none"; video.style.display="block";
+      btnUse.style.display="none"; btnShot.style.display="inline-flex";
+      camModal.style.display="flex";
+    }catch(e){
+      showToast("Sem acesso à câmera; verifique as permissões do navegador.");
+    }
+  }
+  btnCam.addEventListener('click', openCamera);
+  btnClose.addEventListener('click', ()=>{
+    if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
+    camModal.style.display="none";
+  });
+  btnShot.addEventListener('click', ()=>{
+    const w = video.videoWidth, h = video.videoHeight;
+    canvas.width=w; canvas.height=h;
+    const ctx = canvas.getContext('2d'); ctx.drawImage(video,0,0,w,h);
+    canvas.style.display="block"; video.style.display="none";
+    btnUse.style.display="inline-flex"; btnShot.style.display="none";
+  });
+  btnUse.addEventListener('click', ()=>{
+    const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+    addPhotoDataURL(dataURL);
+    btnClose.click();
+  });
+
+  /* PDF */
   function montarPDF(){
     if(!validarCamposIniciais()) return;
     if(!validarNOK()) return;
-    const radios=$$("#lista input[type=radio]");
-    const obs=$$("#lista .obs");
-    const phTable=$("#phTable"); phTable.innerHTML="";
-    ITEMS.forEach((it,i)=>{
+    const cards = Array.from(document.querySelectorAll('#lista .item'));
+    const phTable=document.getElementById('phTable'); phTable.innerHTML="";
+    cards.forEach(card=>{
+      const title = card.querySelector('.title')?.textContent||"";
+      const sel = card.querySelector('input[type=radio]:checked');
+      const v = sel? sel.value : "";
+      const o = (card.querySelector('.obs')?.value||"").trim();
       const tr=document.createElement('tr');
-      const sel=radios.filter(r=>r.name===`r${i}`).find(r=>r.checked);
-      const v=sel?sel.value:"";
-      const o=(obs[i].value||"").trim();
-      tr.innerHTML=`<td>${it.OQueVerificar}</td><td>${v||"-"}</td><td>${o}</td>`;
+      tr.innerHTML=`<td>${title.replace(/^\d+\.\s*/,'')}</td><td>${v||"-"}</td><td>${o}</td>`;
       phTable.append(tr);
     });
-    const now=new Date();
-    $("#phHeader").textContent=now.toLocaleString();
-    $("#phWO").textContent="WO: "+($("#inpWO").value||"-");
-    $("#phTec").textContent="Técnico: "+($("#inpTec").value||"-");
-    if($("#out").value.trim().length===0){ buildResumo(); }
-    $("#phResumo").textContent=$("#out").value.trim();
-    window.print();
+    const now=new Date(); const dd=String(now.getDate()).padStart(2,'0'); const mm=String(now.getMonth()+1).padStart(2,'0'); const yyyy=now.getFullYear(); const hh=String(now.getHours()).padStart(2,'0'); const mi=String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('phHeader').textContent=`${dd}/${mm}/${yyyy} ${hh}:${mi}`;
+    const woTxt=(document.getElementById('inpWO').value||"-"), tecTxt=(document.getElementById('inpTec').value||"-");
+    document.getElementById('phWO').textContent="WO: "+woTxt; document.getElementById('phTec').textContent="Técnico: "+tecTxt; document.getElementById('phDefeito').textContent="Defeito: " + DEF_ATUAL;
+    const phDiagramas = document.getElementById('phDiagramas'); phDiagramas.innerHTML="";
+    if(DEF_ATUAL==="Falta de Cura"){
+      const d = {
+        "Molde Esquerdo": {Superior: document.getElementById('diag1_top')?.value, Direita: document.getElementById('diag1_right')?.value, Inferior: document.getElementById('diag1_bottom')?.value, Esquerda: document.getElementById('diag1_left')?.value},
+        "Molde Direito": {Superior: document.getElementById('diag2_top')?.value, Direita: document.getElementById('diag2_right')?.value, Inferior: document.getElementById('diag2_bottom')?.value, Esquerda: document.getElementById('diag2_left')?.value},
+        "Platen Esquerdo": {Superior: document.getElementById('diag3_top')?.value, Direita: document.getElementById('diag3_right')?.value, Inferior: document.getElementById('diag3_bottom')?.value, Esquerda: document.getElementById('diag3_left')?.value},
+        "Platen Direito": {Superior: document.getElementById('diag4_top')?.value, Direita: document.getElementById('diag4_right')?.value, Inferior: document.getElementById('diag4_bottom')?.value, Esquerda: document.getElementById('diag4_left')?.value}
+      };
+      const grid=document.createElement('div'); grid.className='diagram-grid';
+      const buildPrintCircle=(titulo, vals)=>{
+        const box = document.createElement('div'); box.className='diag-block print-diagram';
+        const h = document.createElement('div'); h.className='diag-title'; h.textContent=titulo; box.append(h);
+        const c = document.createElement('div'); c.className='circle'; c.style.position='relative';
+        c.innerHTML = '<div class="axis"></div><div class="axis h"></div>';
+        const mk = (cls, txt)=>{ const s=document.createElement('span'); s.className='qval '+cls; s.textContent=txt; return s; };
+        c.append(mk('top', (vals.Superior||'')+'°F'));
+        c.append(mk('right', (vals.Direita||'')+'°F'));
+        c.append(mk('bottom', (vals.Inferior||'')+'°F'));
+        c.append(mk('left', (vals.Esquerda||'')+'°F'));
+        box.append(c); return box;
+      };
+      grid.append(buildPrintCircle('Molde Esquerdo', d["Molde Esquerdo"]));
+      grid.append(buildPrintCircle('Molde Direito', d["Molde Direito"]));
+      grid.append(buildPrintCircle('Platen Esquerdo', d["Platen Esquerdo"]));
+      grid.append(buildPrintCircle('Platen Direito', d["Platen Direito"]));
+      phDiagramas.append(grid);
+    }
+    const wrapFotos = document.getElementById('phFotosWrap'), gridFotos = document.getElementById('phFotos'); gridFotos.innerHTML="";
+    if(PHOTOS.length){ wrapFotos.style.display='block'; PHOTOS.forEach(p=>{ const fig=document.createElement('figure'); const im=document.createElement('img'); im.src=p.dataURL; fig.append(im); const cap=document.createElement('figcaption'); cap.textContent=p.caption||''; fig.append(cap); gridFotos.append(fig); }); } else { wrapFotos.style.display='none'; }
+    document.getElementById('phResumo').textContent=document.getElementById('out').value.trim();
+    const defeito = (DEF_ATUAL||'Defeito').replace(/\s+/g,'-'); const safeTec = slugify(tecTxt); const dataStr=`${dd}-${mm}-${yyyy}_${hh}h${mi}`; const fname = `WO-${slugify(woTxt)}_${safeTec}_${defeito}_${dataStr}.pdf`;
+    const prevTitle = document.title; document.title = fname.replace(/\.pdf$/,''); 
+    const showSavedToast = ()=>{ showToast(`Salvo: ${fname}`); window.removeEventListener('afterprint', showSavedToast); document.title = prevTitle; };
+    window.addEventListener('afterprint', showSavedToast);
+    setTimeout(()=>{ window.print(); }, 40);
   }
 
-  $("#btnGo").addEventListener('click',()=>{
+  /* Eventos */
+  document.getElementById('btnGo').addEventListener('click',()=>{
     if(!validarCamposIniciais()) return;
-    const def=$("#selDef").value;
-    ITEMS=(DATA.itens_por_defeito[def]||[]);
+    DEF_ATUAL=document.getElementById('selDef').value;
+    ITEMS=(DATA.itens_por_defeito[DEF_ATUAL]||[]);
     renderChecklist();
-    $("#cardChk").style.display='block';
-    $("#cardOut").style.display='none';
-    $("#cardChk").scrollIntoView({behavior:'smooth',block:'start'});
+    document.getElementById('cardChk').style.display='block'; document.getElementById('cardOut').style.display='none';
+    document.getElementById('cardChk').scrollIntoView({behavior:'smooth',block:'start'});
   });
 
-  $("#btnResumo").addEventListener('click', buildResumo);
-  $("#btnPDF").addEventListener('click', montarPDF);
-  $("#btnCopy").addEventListener('click',()=>{
-    const el=$("#out"); const txt=el.value;
-    const fallback=()=>{try{el.select(); document.execCommand('copy'); showToast('Copiado!');}catch(e){showToast('Selecione e copie manualmente.');}};
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(txt).then(()=>showToast('Copiado!')).catch(()=>fallback());
-    }else fallback();
+  document.getElementById('btnResumo').addEventListener('click', ()=>{ buildResumo(); });
+  document.getElementById('btnPDF').addEventListener('click', montarPDF);
+  document.getElementById('btnCopy').addEventListener('click',()=>{
+    const txt=document.getElementById('out').value;
+    const done = ()=>{ showToast('Copiado!'); };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(()=>{}); }
+    else{ const out=document.getElementById('out'); out.select(); document.execCommand('copy'); done(); }
   });
-  $("#btnReset")?.addEventListener('click',()=>location.reload());
-
-  $("#inpWO").addEventListener('input', e=> e.target.classList.remove('error'));
-  $("#inpTec").addEventListener('input', e=> e.target.classList.remove('error'));
-  $("#selDef").addEventListener('change', e=> e.target.classList.remove('error'));
+  document.getElementById('btnReset')?.addEventListener('click',()=>location.reload());
+  document.getElementById('btnClear')?.addEventListener('click',()=>{
+    document.getElementById('inpWO').value=""; document.getElementById('inpTec').value=""; document.getElementById('selDef').value="";
+    document.getElementById('lista').innerHTML=""; document.getElementById('cardChk').style.display='none';
+    document.getElementById('done').textContent="0"; document.getElementById('total').textContent="0"; document.getElementById('bar').style.width="0%";
+    document.getElementById('out').value=""; document.getElementById('cardOut').style.display='none';
+    PHOTOS=[]; (document.getElementById('photoList').innerHTML="");
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+  ['inpWO','inpTec','selDef'].forEach(id=> document.getElementById(id).addEventListener('input', e=> e.target.classList.remove('error')));
 });
 </script>
 </body>
